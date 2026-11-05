@@ -1,6 +1,7 @@
 module COPSBenchmark
 
 using Random
+using Preferences: @load_preference, @set_preferences!
 
 abstract type AbstractModelerBackend end
 struct JuMPBackend <: AbstractModelerBackend end
@@ -452,5 +453,6 @@ function triangle_turtle_model end
 function transition_state_model end
 
 include("pde_utils.jl")
+include("precompile.jl")
 
 end # module COPSBenchmark

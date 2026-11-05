@@ -10,6 +10,7 @@ using NLPModelsIpopt
 using NLPModelsJuMP
 using SparseArrays
 using LinearAlgebra
+using Preferences
 using Random
 using COPSBenchmark
 
@@ -310,4 +311,25 @@ end
         @test NLPModels.obj(m, x) == NLPModels.obj(ref, x)
         @test NLPModels.grad(m, x) == NLPModels.grad(ref, x)
     end
+end
+
+@testset "Precompile preference" begin
+    @test COPSBenchmark.PRECOMPILE === load_preference(COPSBenchmark, "precompile", false)
+
+    file = joinpath(dirname(Base.active_project()), "LocalPreferences.toml")
+    saved = isfile(file) ? read(file) : nothing
+    try
+        for flag in (true, false)
+            @test (@test_logs (:info, r"Restart Julia") COPSBenchmark.set_precompile(flag)) === flag
+            @test load_preference(COPSBenchmark, "precompile") === flag
+        end
+    finally
+        saved === nothing ? rm(file; force = true) : write(file, saved)
+    end
+end
+
+@testset "Precompile workload" begin
+    @test (@test_logs min_level = Base.CoreLogging.Warn COPSBenchmark._precompile_workload(nothing)) === nothing
+    # No model builds with a non-numeric element type; each one is skipped.
+    @test (@test_logs (:warn, r"skipping") match_mode = :any COPSBenchmark._precompile_workload(nothing; T = String)) === nothing
 end
