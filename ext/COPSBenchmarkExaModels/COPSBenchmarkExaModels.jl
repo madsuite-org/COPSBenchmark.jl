@@ -5,6 +5,14 @@ import COPSBenchmark
 import COPSBenchmark: ExaModelsBackend
 using ExaModels
 
+# `1:arg.N` on a recipe argument. ExaModels leaves these out of `Base.:(:)` because
+# extending it invalidates compiled code, so this module keeps its own `:`. A slice in a file
+# included here is written `A[Colon(), j]`: `A[:, j]` would index with this function.
+@inline (:)(a...) = Base.:(:)(a...)
+@inline (:)(a::ExaModels.AbstractArgNode, b::ExaModels.AbstractArgNode) = ExaModels.ArgNode2(Colon(), a, b)
+@inline (:)(a::ExaModels.AbstractArgNode, b::Number) = ExaModels.ArgNode2(Colon(), a, b)
+@inline (:)(a::Number, b::ExaModels.AbstractArgNode) = ExaModels.ArgNode2(Colon(), a, b)
+
 # ── Deferred callables in recipes ─────────────────────────────────────────────
 #
 # Every function a recipe defers — start generators, index-set builders, data

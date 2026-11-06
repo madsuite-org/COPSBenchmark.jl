@@ -6662,5 +6662,5 @@ Const_hook = [
     1190,
 ]
 
-TETS_hook = vec(reshape(TETS_hook[:, 2:5], 4675 * 4, 1))
-xe_hook = vec(reshape(xe_hook[:, 2:4], 1190 * 3, 1))
+TETS_hook = vec(reshape(TETS_hook[Colon(), 2:5], 4675 * 4, 1))
+xe_hook = vec(reshape(xe_hook[Colon(), 2:4], 1190 * 3, 1))

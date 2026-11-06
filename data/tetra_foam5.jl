@@ -7239,5 +7239,5 @@ Const_foam5 = [
     1337,
 ]
 
-TETS_foam5 = vec(reshape(TETS_foam5[:, 2:5], 4847 * 4, 1))
-xe_foam5 = vec(reshape(xe_foam5[:, 2:4], 1337 * 3, 1))
+TETS_foam5 = vec(reshape(TETS_foam5[Colon(), 2:5], 4847 * 4, 1))
+xe_foam5 = vec(reshape(xe_foam5[Colon(), 2:4], 1337 * 3, 1))

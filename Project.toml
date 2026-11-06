@@ -24,12 +24,13 @@ COPSBenchmarkCUDA = ["CUDA", "ExaModels", "KernelAbstractions"]
 COPSBenchmarkExaModels = "ExaModels"
 COPSBenchmarkExaModelsCompiler = "ExaModelsCompiler"
 COPSBenchmarkJuMP = "JuMP"
+COPSBenchmarkKernelAbstractions = ["ExaModels", "KernelAbstractions"]
 COPSBenchmarkMetal = ["Metal", "ExaModels", "KernelAbstractions"]
 COPSBenchmarkoneAPI = ["oneAPI", "ExaModels", "KernelAbstractions"]
 
 [compat]
-ExaModels = "0.14"
-ExaModelsCompiler = "0.2"
+ExaModels = "0.15"
+ExaModelsCompiler = "0.3"
 AMDGPU = "2"
 CUDA = "6"
 JuMP = "^1.19"

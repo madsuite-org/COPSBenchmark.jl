@@ -6251,8 +6251,8 @@ TRIS_turtle = [
     4025 2221 2222 2220
 ];
 
-TRIS_turtle = vec(reshape(TRIS_turtle[:, 2:4], 4025 * 3, 1));
-xe_turtle = vec(reshape(xe_turtle[:, 2:3], 2222 * 2, 1));
+TRIS_turtle = vec(reshape(TRIS_turtle[Colon(), 2:4], 4025 * 3, 1));
+xe_turtle = vec(reshape(xe_turtle[Colon(), 2:3], 2222 * 2, 1));
 Const_turtle = [
     1,
     2,

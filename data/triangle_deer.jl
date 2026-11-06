@@ -3022,8 +3022,8 @@ TRIS_deer = [
     1896 1121 1120 1122
 ];
 
-TRIS_deer = vec(reshape(TRIS_deer[:, 2:4], 1896 * 3, 1));
-xe_deer = vec(reshape(xe_deer[:, 2:3], 2 * 1122, 1));
+TRIS_deer = vec(reshape(TRIS_deer[Colon(), 2:4], 1896 * 3, 1));
+xe_deer = vec(reshape(xe_deer[Colon(), 2:3], 2 * 1122, 1));
 
 Const_deer = [
     1,

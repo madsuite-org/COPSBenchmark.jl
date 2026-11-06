@@ -1869,8 +1869,8 @@ TRIS_pacman = [
     1182 683 682 681
 ];
 
-xe_pacman = vec(reshape(xe_pacman[:, 2:3], 2 * 683, 1))
-TRIS_pacman = vec(reshape(TRIS_pacman[:, 2:4], 1182 * 3, 1))
+xe_pacman = vec(reshape(xe_pacman[Colon(), 2:3], 2 * 683, 1))
+TRIS_pacman = vec(reshape(TRIS_pacman[Colon(), 2:4], 1182 * 3, 1))
 
 Const_pacman = [
     1,
