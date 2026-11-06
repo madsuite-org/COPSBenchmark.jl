@@ -36,6 +36,7 @@ include("polygon.jl")
 include("triangle.jl")
 include("tetra.jl")
 include("pde_models.jl")
+include("precompile.jl")
 
 end
 
