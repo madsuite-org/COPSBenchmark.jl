@@ -6,7 +6,7 @@ import ExaModels: NLPModels
 
 # A model's type does not depend on its size, so a small instance compiles what a large one
 # needs. The tetra and triangle meshes share one expression each, and so do the PDE models.
-const _DEVICE_MODELS = (
+const _MODELS = (
     (COPSBenchmark.camshape_model, (100,)),
     (COPSBenchmark.chain_model, (100,)),
     (COPSBenchmark.glider_model, (10,)),
@@ -15,11 +15,6 @@ const _DEVICE_MODELS = (
     (COPSBenchmark.triangle_pacman_model, ()),
     (COPSBenchmark.tetra_gear_model, ()),
     (COPSBenchmark.dirichlet_model, (5,)),
-)
-
-# Their iteration data stays in a host `Array`, which a GPU kernel cannot take as an
-# argument, so they run on the CPU only.
-const _HOST_MODELS = (
     (COPSBenchmark.bearing_model, (10, 10)),
     (COPSBenchmark.catmix_model, (10,)),
     (COPSBenchmark.channel_model, (20,)),
@@ -33,6 +28,7 @@ const _HOST_MODELS = (
     (COPSBenchmark.steering_model, (20,)),
     (COPSBenchmark.torsion_model, (10, 10)),
 )
+
 
 # Each call goes through `invokelatest`, as a call from the top level or from behind a
 # solver's model barrier does, so that it is compiled as a standalone method rather than
@@ -57,8 +53,7 @@ end
 function COPSBenchmark._precompile_workload(backend; T = nothing)
     kw = backend === nothing ? (;) : (; backend)
     kw = T === nothing ? kw : (; kw..., T)
-    models = backend === nothing ? (_DEVICE_MODELS..., _HOST_MODELS...) : _DEVICE_MODELS
-    for (model, args) in models
+    for (model, args) in _MODELS
         try
             _evaluate_callbacks(_call(model, ExaModelsBackend(), args...; kw...))
         catch err

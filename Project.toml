@@ -28,10 +28,8 @@ COPSBenchmarkMetal = ["Metal", "ExaModels", "KernelAbstractions"]
 COPSBenchmarkoneAPI = ["oneAPI", "ExaModels", "KernelAbstractions"]
 
 [compat]
-# ExaModels and ExaModelsCompiler are deliberately absent -- see the note in
-# LuksanVlcekBenchmark: the recipe API is in no registered ExaModels version and
-# ExaModelsCompiler is unregistered, so any bound would name a version that does
-# not exist.
+ExaModels = "0.14"
+ExaModelsCompiler = "0.2"
 AMDGPU = "2"
 CUDA = "6"
 JuMP = "^1.19"
