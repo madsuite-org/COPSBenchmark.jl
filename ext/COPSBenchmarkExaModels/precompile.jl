@@ -2,7 +2,6 @@
 # run in the backend extensions.
 
 import PrecompileTools
-import ExaModels: NLPModels
 
 # A model's type does not depend on its size, so a small instance compiles what a large one
 # needs. The tetra and triangle meshes share one expression each, and so do the PDE models.
@@ -27,6 +26,16 @@ const _MODELS = (
     (COPSBenchmark.polygon_model, (50,)),
     (COPSBenchmark.steering_model, (20,)),
     (COPSBenchmark.torsion_model, (10, 10)),
+    (COPSBenchmark.henon_model, (5,)),
+    (COPSBenchmark.lane_emden_model, (5,)),
+)
+
+# Models that share the code of a model above and have only their entry point of their own.
+const _ENTRY_POINTS = (
+    COPSBenchmark.triangle_deer_model, COPSBenchmark.triangle_turtle_model,
+    COPSBenchmark.tetra_duct12_model, COPSBenchmark.tetra_duct15_model,
+    COPSBenchmark.tetra_duct20_model, COPSBenchmark.tetra_foam5_model,
+    COPSBenchmark.tetra_hook_model,
 )
 
 
@@ -35,30 +44,19 @@ const _MODELS = (
 # only inlined into the workload.
 _call(f, args...; kw...) = Base.invokelatest(f, args...; kw...)
 
-function _evaluate_callbacks(m)
-    x = copy(NLPModels.get_x0(m))
-    T = eltype(x)
-    ncon, nnzj, nnzh = NLPModels.get_ncon(m), NLPModels.get_nnzj(m), NLPModels.get_nnzh(m)
-    y = fill!(similar(x, ncon), zero(T))
-    _call(NLPModels.jac_structure!, m, similar(x, Int, nnzj), similar(x, Int, nnzj))
-    _call(NLPModels.hess_structure!, m, similar(x, Int, nnzh), similar(x, Int, nnzh))
-    _call(NLPModels.obj, m, x)
-    _call(NLPModels.grad!, m, x, similar(x))
-    _call(NLPModels.cons!, m, x, similar(x, ncon))
-    _call(NLPModels.jac_coord!, m, x, similar(x, nnzj))
-    _call(NLPModels.hess_coord!, m, x, y, similar(x, nnzh); obj_weight = one(T))
-    return nothing
-end
-
 function COPSBenchmark._precompile_workload(backend; T = nothing)
     kw = backend === nothing ? (;) : (; backend)
     kw = T === nothing ? kw : (; kw..., T)
     for (model, args) in _MODELS
         try
-            _evaluate_callbacks(_call(model, ExaModelsBackend(), args...; kw...))
+            ExaModels.precompile_callbacks(_call(model, ExaModelsBackend(), args...; kw...))
         catch err
             @warn "skipping $model in the precompile workload" exception = err
         end
+    end
+    for f in _ENTRY_POINTS
+        isempty(kw) ? precompile(f, (ExaModelsBackend,)) :
+            precompile(Core.kwcall, (typeof(kw), typeof(f), ExaModelsBackend))
     end
     return nothing
 end

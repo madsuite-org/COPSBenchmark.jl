@@ -4595,5 +4595,5 @@ Const_gear = [
     866,
 ]
 
-TETS_gear = vec(reshape(TETS_gear[:, 2:5], 3116 * 4, 1))
-xe_gear = vec(reshape(xe_gear[:, 2:4], 866 * 3, 1))
+TETS_gear = vec(reshape(TETS_gear[Colon(), 2:5], 3116 * 4, 1))
+xe_gear = vec(reshape(xe_gear[Colon(), 2:4], 866 * 3, 1))

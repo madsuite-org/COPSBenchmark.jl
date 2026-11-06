@@ -12320,5 +12320,5 @@ Const_duct15 = [
     2139,
 ]
 
-TETS_duct15 = vec(reshape(TETS_duct15[:, 2:5], 9000 * 4, 1))
-xe_duct15 = vec(reshape(xe_duct15[:, 2:4], 2139 * 3, 1))
+TETS_duct15 = vec(reshape(TETS_duct15[Colon(), 2:5], 9000 * 4, 1))
+xe_duct15 = vec(reshape(xe_duct15[Colon(), 2:4], 2139 * 3, 1))
