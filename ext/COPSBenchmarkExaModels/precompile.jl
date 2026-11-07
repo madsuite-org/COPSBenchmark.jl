@@ -47,16 +47,20 @@ _call(f, args...; kw...) = Base.invokelatest(f, args...; kw...)
 function COPSBenchmark._precompile_workload(backend; T = nothing)
     kw = backend === nothing ? (;) : (; backend)
     kw = T === nothing ? kw : (; kw..., T)
-    for (model, args) in _MODELS
-        try
-            ExaModels.precompile_callbacks(_call(model, ExaModelsBackend(), args...; kw...))
-        catch err
-            @warn "skipping $model in the precompile workload" exception = err
+    # `prod = true` changes the type of a model: a solver on a GPU needs its products
+    variants = backend === nothing ? (kw,) : (kw, (; kw..., prod = true))
+    for options in variants
+        for (model, args) in _MODELS
+            try
+                ExaModels.precompile_callbacks(_call(model, ExaModelsBackend(), args...; options...))
+            catch err
+                @warn "skipping $model in the precompile workload" exception = err
+            end
         end
-    end
-    for f in _ENTRY_POINTS
-        isempty(kw) ? precompile(f, (ExaModelsBackend,)) :
-            precompile(Core.kwcall, (typeof(kw), typeof(f), ExaModelsBackend))
+        for f in _ENTRY_POINTS
+            isempty(options) ? precompile(f, (ExaModelsBackend,)) :
+                precompile(Core.kwcall, (typeof(options), typeof(f), ExaModelsBackend))
+        end
     end
     return nothing
 end
