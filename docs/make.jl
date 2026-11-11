@@ -4,6 +4,7 @@ using COPSBenchmark
 makedocs(
     sitename = "COPSBenchmark.jl",
     format = Documenter.HTML(
+        assets = ["assets/favicon.ico"],
         prettyurls = get(ENV, "CI", nothing) == "true",
     ),
     pages = [
