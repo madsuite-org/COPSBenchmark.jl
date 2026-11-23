@@ -30,7 +30,7 @@ COPSBenchmarkoneAPI = ["oneAPI", "ExaModels", "KernelAbstractions"]
 
 [compat]
 ExaModels = "0.15"
-ExaModelsCompiler = "0.3"
+ExaModelsCompiler = "0.3, 0.4"
 AMDGPU = "2"
 CUDA = "6"
 JuMP = "^1.19"

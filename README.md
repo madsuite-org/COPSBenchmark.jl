@@ -39,3 +39,28 @@ The setting goes into the active project's `LocalPreferences.toml`. The next Jul
 The CPU workload runs when ExaModels is loaded. A GPU workload runs when CUDA, AMDGPU, Metal or oneAPI is loaded together with ExaModels and KernelAbstractions, and only if a device works at precompile time. Otherwise it is skipped. It covers the models that run on a GPU: camshape, chain, glider, robot, rocket, and the triangle, tetra and PDE models.
 
 oneAPI reports no device during precompilation, so its workload never runs and first calls on an Intel GPU still compile.
+
+## Compiled library
+
+Every model is also published as one compiled shared library implementing the
+[cnlp ABI](https://cnlplib.madsuite.org), with CPU and CUDA evaluation and no Julia needed
+to use it. Each push to `main` updates the `nightly` release, and each registered version
+gets its own release:
+
+```sh
+cnlp install cops            # the latest version (https://cnlplib.madsuite.org)
+cnlp install cops@nightly    # the latest build of main
+cnlp solve @cops:rocket 400
+```
+
+From Julia, through [CNLPLib.jl](https://github.com/madsuite-org/CNLPLib.jl):
+
+```julia
+using CNLPLib, MadNLP
+madnlp(CNLPModel("@cops", :rocket, 400))
+```
+
+`bearing`, `minsurf` and `torsion` take two grid sizes; every other model takes one size.
+To build the library yourself, with ExaModelsCompiler loaded:
+`compile_all(COPSBenchmark; path = "cops", bundle = true)` (add `device = :cuda` for the
+CUDA tier).
