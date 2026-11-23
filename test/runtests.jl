@@ -4,7 +4,7 @@ using JuMP
 using Ipopt
 using ExaModels
 using ExaModelsCompiler
-import CNLPModels
+import CNLPLib
 using NLPModels
 using NLPModelsIpopt
 using NLPModelsJuMP
@@ -289,7 +289,7 @@ end
 # is at a size the library was not compiled for, since a model that only answers
 # at its compile-time size is not a recipe.
 @testset "compile_all" begin
-    # The default `path = "@cops"` installs onto the CNLPModels search path, which
+    # The default `path = "@cops"` installs onto the CNLPLib search path, which
     # only exists if CNLPMODELS_PATH is set.  Point it at a temporary directory so
     # the call stays the plain default one without writing into the user's depot.
     dir = mktempdir()
@@ -297,11 +297,11 @@ end
         ExaModelsCompiler.compile_all(COPSBenchmark)
     end
     @test isfile(r.libpath)
-    lib = CNLPModels.load(r.libpath)
+    lib = CNLPLib.load(r.libpath)
 
     b = COPSBenchmark.ExaModelsBackend()
     for name in (:chain, :camshape)
-        m = CNLPModels.CNLPModel(lib, getfield(COPSBenchmark, Symbol(name, :_args))(b, 29)...;
+        m = CNLPLib.CNLPModel(lib, getfield(COPSBenchmark, Symbol(name, :_args))(b, 29)...;
                                  prefix = String(name))
         ref = getfield(COPSBenchmark, Symbol(name, :_model))(b, 29)
         @test m.meta.nvar == ref.meta.nvar
